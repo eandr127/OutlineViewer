@@ -1,5 +1,6 @@
 package edu.wpi.first.outlineviewer;
 
+import edu.wpi.first.outlineviewer.plugin.PluginHandler;
 import edu.wpi.first.outlineviewer.view.dialog.PreferencesDialog;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -19,12 +20,12 @@ public class OutlineViewer extends Application {
 
   @Override
   public void start(Stage primaryStage) throws IOException {
-    if (!"1.8".equals(System.getProperty("java.specification.version"))) {
+    if (parseVersion(System.getProperty("java.specification.version")) < 8) {
       Alert invalidVersionAlert = new Alert(Alert.AlertType.ERROR);
       invalidVersionAlert.setHeaderText("Invalid JRE Version!");
       invalidVersionAlert.setContentText(
           String.format("You are using an unsupported Java version: %s!  "
-              + "Please download Java 8.",
+              + "Please download Java 8 or newer.",
               System.getProperty("java.version")));
       invalidVersionAlert.showAndWait();
 
@@ -32,6 +33,14 @@ public class OutlineViewer extends Application {
     }
 
     AutoUpdater updater = new AutoUpdater();
+
+
+
+    PluginHandler pluginHandler = new PluginHandler();
+    pluginHandler.load();
+    pluginHandler.init();
+
+    Runtime.getRuntime().addShutdownHook(new Thread(pluginHandler::destroy));
 
     PreferencesDialog preferencesDialog = new PreferencesDialog(QUIT, START);
     if (preferencesDialog.showAndWait().orElse(false)) {
@@ -47,4 +56,12 @@ public class OutlineViewer extends Application {
     }
   }
 
+  private int parseVersion(String versionString) {
+    if(versionString.startsWith("1\\.")) {
+      return Integer.parseInt(versionString.split("\\.")[1]);
+	}
+	else {
+      return Integer.parseInt(versionString);
+	}
+  }
 }

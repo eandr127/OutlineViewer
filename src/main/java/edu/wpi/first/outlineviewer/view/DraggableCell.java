@@ -20,6 +20,7 @@ public class DraggableCell<T> extends ListCell<T> {
 
   private static final DataFormat T_FORMAT = new DataFormat("GENERIC");
 
+  @SuppressWarnings("unchecked")
   public DraggableCell() {
     ListCell<T> thisCell = this;
 

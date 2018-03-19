@@ -1,10 +1,12 @@
 
 import edu.wpi.first.wpilib.versioning.ReleaseType
 import org.gradle.api.Project
+import org.gradle.api.JavaVersion
 import org.gradle.api.plugins.quality.FindBugs
 import org.gradle.api.tasks.wrapper.Wrapper
 import org.gradle.testing.jacoco.tasks.JacocoReport
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.exclude
 
 buildscript {
     repositories {
@@ -35,6 +37,12 @@ apply {
 
 group = "edu.wpi.first.wpilib"
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    println("Compiling for Java ${targetCompatibility}")
+}
+
 // Spotless is used to lint and reformat source files.
 spotless {
     kotlinGradle {
@@ -64,7 +72,7 @@ repositories {
 dependencies {
     compile(group = "edu.wpi.first.ntcore", name = "ntcore-java", version = "4.+")
     compile(group = "edu.wpi.first.wpiutil", name = "wpiutil-java", version = "3.+")
-    compile(group = "org.controlsfx", name = "controlsfx", version = "8.40.14")
+    compile(group = "org.controlsfx", name = "controlsfx", version = "9.0.0")
     compile(group = "com.google.guava", name = "guava", version = "23.0")
 
     runtime(group = "edu.wpi.first.ntcore", name = "ntcore-jni", version = "4.+", classifier = "all")
@@ -204,7 +212,7 @@ if (!hasProperty("releaseType")) {
 fun getWPILibVersion(): String? = if (WPILibVersion.version != "") WPILibVersion.version else null
 
 task<Wrapper>("wrapper") {
-    gradleVersion = "4.1"
+    gradleVersion = "4.6"
 }
 
 /**

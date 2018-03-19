@@ -70,7 +70,7 @@ public class ToggleSwitchListCellTest extends ApplicationTest {
         .map(ToggleSwitchListCell.class::cast)
         .filter(t -> t.getGraphic().isVisible())
         .findAny()
-        .get();
+        .orElseThrow(() -> new UnsupportedOperationException("Could not find any suitable cells"));
   }
 
   private ToggleSwitch getToggleSwitch() {
